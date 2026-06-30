@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: lunador_postgres_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lunador
+      POSTGRES_USER: lunador
+      POSTGRES_PASSWORD: qvt8Bu^Wn6bTgxx
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - lunador_postgres_dev_data:/var/lib/postgresql/data
+
+volumes:
+  lunador_postgres_dev_data:
