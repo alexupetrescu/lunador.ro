@@ -26,3 +26,10 @@ frontend/.env.production.local
 Thumbs.db
 .vscode/
 .idea/
+
+# Backups
+backups/
+*.dump
+*.sql
+*.sql.gz
+*.tar.gz
