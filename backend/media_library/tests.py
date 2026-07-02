@@ -84,6 +84,17 @@ class MediaApiUploadTests(TestCase):
             f"expected relative /media/ url, got {res.data['url']}",
         )
 
+    def test_json_patch_updates_metadata(self):
+        asset = MediaAsset.objects.create(file=make_png())
+        res = self.client.patch(
+            f"/api/media/assets/{asset.id}/",
+            {"title": "Night sky", "alt_text": "Stars over hills"},
+            format="json",
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self.assertEqual(res.data["title"], "Night sky")
+        self.assertEqual(res.data["alt_text"], "Stars over hills")
+
     def test_upload_sets_uploaded_by_detail(self):
         res = self.client.post(
             "/api/media/assets/",

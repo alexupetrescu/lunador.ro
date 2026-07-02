@@ -1,6 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import MediaAsset, MediaTag
@@ -24,7 +24,8 @@ class MediaAssetViewSet(viewsets.ModelViewSet):
     queryset = MediaAsset.objects.all().prefetch_related("tags")
     serializer_class = MediaAssetSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    parser_classes = [MultiPartParser, FormParser]
+    # Multipart/form for file uploads, JSON for metadata edits from the CRM.
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ["kind", "tags"]
     search_fields = ["title", "alt_text", "caption", "credit"]
