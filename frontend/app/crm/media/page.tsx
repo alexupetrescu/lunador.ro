@@ -6,10 +6,12 @@ import {
   deleteMedia,
   formatApiError,
   listMedia,
+  listMediaTags,
   updateMedia,
   uploadMedia,
 } from "@/lib/browser-api";
-import type { MediaAssetAdmin } from "@/lib/types";
+import { resolveMediaUrl } from "@/lib/media-url";
+import type { MediaAssetAdmin, MediaTag } from "@/lib/types";
 
 import styles from "../crm.module.css";
 
@@ -21,7 +23,14 @@ export default function MediaManagerPage() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const [editing, setEditing] = useState<MediaAssetAdmin | null>(null);
+  const [allTags, setAllTags] = useState<MediaTag[]>([]);
   const fileInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    listMediaTags()
+      .then((data) => setAllTags(data.results))
+      .catch(() => setAllTags([]));
+  }, []);
 
   const load = useCallback(async (query: string) => {
     setLoading(true);
@@ -64,6 +73,7 @@ export default function MediaManagerPage() {
       credit: asset.credit,
       focal_x: asset.focal_x,
       focal_y: asset.focal_y,
+      tag_ids: asset.tags.map((t) => t.id),
     });
     setAssets((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
     setEditing(null);
@@ -142,7 +152,7 @@ export default function MediaManagerPage() {
             >
               {asset.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img className={styles.mediaThumb} src={asset.url} alt={asset.alt_text} />
+                <img className={styles.mediaThumb} src={resolveMediaUrl(asset.url) ?? ""} alt={asset.alt_text} />
               ) : (
                 <div className={styles.mediaThumbFallback}>{asset.kind}</div>
               )}
@@ -162,6 +172,7 @@ export default function MediaManagerPage() {
       {editing ? (
         <MetadataDrawer
           asset={editing}
+          allTags={allTags}
           onChange={setEditing}
           onSave={saveMeta}
           onDelete={remove}
@@ -174,17 +185,27 @@ export default function MediaManagerPage() {
 
 function MetadataDrawer({
   asset,
+  allTags,
   onChange,
   onSave,
   onDelete,
   onClose,
 }: {
   asset: MediaAssetAdmin;
+  allTags: MediaTag[];
   onChange: (asset: MediaAssetAdmin) => void;
   onSave: (asset: MediaAssetAdmin) => void;
   onDelete: (id: number) => void;
   onClose: () => void;
 }) {
+  function toggleTag(tag: MediaTag) {
+    const has = asset.tags.some((t) => t.id === tag.id);
+    const tags = has
+      ? asset.tags.filter((t) => t.id !== tag.id)
+      : [...asset.tags, tag];
+    onChange({ ...asset, tags });
+  }
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div
@@ -202,7 +223,7 @@ function MetadataDrawer({
         {asset.url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={asset.url}
+            src={resolveMediaUrl(asset.url) ?? ""}
             alt={asset.alt_text}
             style={{ width: "100%", borderRadius: 6 }}
           />
@@ -212,6 +233,11 @@ function MetadataDrawer({
           {asset.width && asset.height
             ? `${asset.width} × ${asset.height}px`
             : asset.kind}
+          {" · "}
+          Uploaded by {asset.uploaded_by_detail?.name ?? "—"}
+          {asset.created_at
+            ? ` on ${new Date(asset.created_at).toLocaleDateString()}`
+            : ""}
         </p>
 
         <label className={styles.label}>
@@ -246,6 +272,31 @@ function MetadataDrawer({
             onChange={(e) => onChange({ ...asset, credit: e.target.value })}
           />
         </label>
+
+        <div>
+          <span className={styles.label} style={{ marginBottom: 6 }}>
+            Tags
+          </span>
+          <div className={styles.tagChips}>
+            {allTags.length === 0 ? (
+              <span className={styles.muted}>No media tags yet</span>
+            ) : (
+              allTags.map((tag) => {
+                const active = asset.tags.some((t) => t.id === tag.id);
+                return (
+                  <button
+                    key={tag.id}
+                    type="button"
+                    className={active ? styles.tagChipActive : styles.tagChip}
+                    onClick={() => toggleTag(tag)}
+                  >
+                    {tag.name}
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
 
         <div style={{ display: "flex", gap: 12 }}>
           <label className={styles.label} style={{ flex: 1 }}>

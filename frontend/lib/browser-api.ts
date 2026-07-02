@@ -4,6 +4,7 @@ import type {
   Category,
   CurrentUser,
   MediaAssetAdmin,
+  MediaTag,
   Paginated,
   PostAdmin,
   PostRevision,
@@ -191,11 +192,18 @@ export async function uploadMedia(file: File, fields: Record<string, string> = {
   });
 }
 
-export async function updateMedia(id: number, data: Partial<MediaAssetAdmin>) {
+export async function updateMedia(
+  id: number,
+  data: Partial<MediaAssetAdmin> & { tag_ids?: number[] },
+) {
   return request<MediaAssetAdmin>(`/media/assets/${id}/`, {
     method: "PATCH",
     json: data as Json,
   });
+}
+
+export async function listMediaTags() {
+  return request<Paginated<MediaTag>>(`/media/tags/`);
 }
 
 export async function deleteMedia(id: number) {

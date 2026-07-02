@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import DispatchSignup from "@/components/site/DispatchSignup";
 import { formatPostDateShort } from "@/lib/format";
+import { resolveMediaUrl } from "@/lib/media-url";
 import { listPosts } from "@/lib/server-api";
 import { siteConfig } from "@/lib/site";
 import type { PostListItem } from "@/lib/types";
@@ -187,7 +188,7 @@ export default async function HomePage() {
               {featured.featured_image?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={featured.featured_image.url}
+                  src={resolveMediaUrl(featured.featured_image.url) ?? ""}
                   alt={featured.featured_image.alt_text || featured.title}
                 />
               ) : null}

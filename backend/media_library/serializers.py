@@ -1,6 +1,23 @@
+from django.conf import settings
 from rest_framework import serializers
 
 from .models import MediaAsset, MediaTag
+
+
+def media_file_url(obj):
+    """Public URL for an asset's file.
+
+    Returns a relative /media/... path by default so the frontend serves it
+    same-origin (see next.config.ts rewrite). Never uses the request host,
+    which is an internal address (e.g. 127.0.0.1:8010) behind the proxy.
+    """
+    if not obj.file:
+        return None
+    url = obj.file.url
+    base = getattr(settings, "PUBLIC_SITE_URL", "")
+    if base:
+        return f"{base.rstrip('/')}{url}"
+    return url
 
 
 class MediaTagSerializer(serializers.ModelSerializer):
@@ -19,6 +36,7 @@ class MediaAssetSerializer(serializers.ModelSerializer):
         queryset=MediaTag.objects.all(),
         source="tags",
     )
+    uploaded_by_detail = serializers.SerializerMethodField()
 
     class Meta:
         model = MediaAsset
@@ -41,6 +59,7 @@ class MediaAssetSerializer(serializers.ModelSerializer):
             "tags",
             "tag_ids",
             "uploaded_by",
+            "uploaded_by_detail",
             "created_at",
         ]
         read_only_fields = [
@@ -55,13 +74,13 @@ class MediaAssetSerializer(serializers.ModelSerializer):
         extra_kwargs = {"file": {"write_only": True}}
 
     def get_url(self, obj):
-        if not obj.file:
+        return media_file_url(obj)
+
+    def get_uploaded_by_detail(self, obj):
+        user = obj.uploaded_by
+        if not user:
             return None
-        url = obj.file.url
-        request = self.context.get("request")
-        if request is not None:
-            return request.build_absolute_uri(url)
-        return url
+        return {"id": user.id, "name": user.get_full_name() or user.get_username()}
 
 
 class MediaAssetHydratedSerializer(serializers.ModelSerializer):
@@ -91,7 +110,4 @@ class MediaAssetHydratedSerializer(serializers.ModelSerializer):
         ]
 
     def get_url(self, obj):
-        if not obj.file:
-            return None
-        request = self.context.get("request")
-        return request.build_absolute_uri(obj.file.url) if request else obj.file.url
+        return media_file_url(obj)

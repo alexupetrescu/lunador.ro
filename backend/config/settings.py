@@ -121,6 +121,11 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# Optional absolute base for media URLs (e.g. "https://lunador.ro"). When empty,
+# serializers emit relative /media/... paths that the Next.js rewrite serves
+# same-origin — this avoids leaking internal hosts like 127.0.0.1:8010.
+PUBLIC_SITE_URL = config("PUBLIC_SITE_URL", default="")
+
 
 CSRF_TRUSTED_ORIGINS = config(
     "DJANGO_CSRF_TRUSTED_ORIGINS",

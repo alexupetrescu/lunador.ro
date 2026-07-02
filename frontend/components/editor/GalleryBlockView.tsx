@@ -2,6 +2,8 @@
 
 import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
 
+import { resolveMediaUrl } from "@/lib/media-url";
+
 import { addAssets, useAsset } from "./mediaStore";
 import { moveNode } from "./nodeCommands";
 import { openMediaPicker } from "./pickerBridge";
@@ -10,9 +12,10 @@ import styles from "@/app/crm/crm.module.css";
 
 function GalleryThumb({ id }: { id: number }) {
   const asset = useAsset(id);
-  if (!asset?.url) return null;
+  const src = resolveMediaUrl(asset?.url);
+  if (!src) return null;
   // eslint-disable-next-line @next/next/no-img-element
-  return <img src={asset.url} alt={asset.alt_text} />;
+  return <img src={src} alt={asset!.alt_text} />;
 }
 
 export default function GalleryBlockView({

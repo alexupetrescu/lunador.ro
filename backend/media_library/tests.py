@@ -70,3 +70,25 @@ class MediaApiUploadTests(TestCase):
         res = self.client.post("/api/media/assets/", {}, format="multipart")
         self.assertEqual(res.status_code, 400)
         self.assertIn("file", res.data)
+
+    def test_url_is_relative_regardless_of_request_host(self):
+        res = self.client.post(
+            "/api/media/assets/",
+            {"file": make_png()},
+            format="multipart",
+            HTTP_HOST="127.0.0.1:8010",
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        self.assertTrue(
+            res.data["url"].startswith("/media/"),
+            f"expected relative /media/ url, got {res.data['url']}",
+        )
+
+    def test_upload_sets_uploaded_by_detail(self):
+        res = self.client.post(
+            "/api/media/assets/",
+            {"file": make_png()},
+            format="multipart",
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        self.assertEqual(res.data["uploaded_by_detail"]["name"], "editor")

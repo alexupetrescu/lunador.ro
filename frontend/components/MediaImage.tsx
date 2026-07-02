@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { blurDataURL } from "@/lib/blurhash";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { MediaAsset } from "@/lib/types";
 
 interface MediaImageProps {
@@ -20,7 +21,8 @@ export default function MediaImage({
   className,
   priority = false,
 }: MediaImageProps) {
-  if (!asset.url) return null;
+  const src = resolveMediaUrl(asset.url);
+  if (!src) return null;
 
   const placeholder = blurDataURL(asset.blurhash);
   const objectPosition = `${asset.focal_x * 100}% ${asset.focal_y * 100}%`;
@@ -30,7 +32,7 @@ export default function MediaImage({
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={asset.url}
+        src={src}
         alt={asset.alt_text}
         className={className}
         loading={priority ? "eager" : "lazy"}
@@ -40,7 +42,7 @@ export default function MediaImage({
 
   return (
     <Image
-      src={asset.url}
+      src={src}
       alt={asset.alt_text}
       width={asset.width}
       height={asset.height}

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { formatApiError, listMedia, uploadMedia } from "@/lib/browser-api";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { MediaAssetAdmin } from "@/lib/types";
 
 import styles from "@/app/crm/crm.module.css";
@@ -144,7 +145,7 @@ export default function MediaPicker({
               >
                 {asset.url ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img className={styles.mediaThumb} src={asset.url} alt={asset.alt_text} />
+                  <img className={styles.mediaThumb} src={resolveMediaUrl(asset.url) ?? ""} alt={asset.alt_text} />
                 ) : (
                   <div className={styles.mediaThumbFallback}>{asset.kind}</div>
                 )}

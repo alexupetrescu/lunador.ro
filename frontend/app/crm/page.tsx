@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
-import { createPost, listAdminPosts } from "@/lib/browser-api";
+import { createPost, deletePost, listAdminPosts } from "@/lib/browser-api";
 import { crmPath } from "@/lib/crm";
 import type { PostAdmin } from "@/lib/types";
 
@@ -39,6 +39,15 @@ export default function CrmPostsPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  async function handleDelete(post: PostAdmin) {
+    const ok = window.confirm(
+      `Delete "${post.title || "Untitled"}"? This cannot be undone.`,
+    );
+    if (!ok) return;
+    await deletePost(post.slug);
+    setPosts((prev) => prev.filter((p) => p.id !== post.id));
+  }
 
   async function handleCreate() {
     setCreating(true);
@@ -81,6 +90,7 @@ export default function CrmPostsPage() {
               <th>Status</th>
               <th>Category</th>
               <th>Updated</th>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -100,10 +110,18 @@ export default function CrmPostsPage() {
                   </span>
                 </td>
                 <td className={styles.muted}>
-                  {post.category ? post.category : "—"}
+                  {post.category_detail?.name ?? "—"}
                 </td>
                 <td className={styles.muted}>
                   {new Date(post.updated_at).toLocaleDateString()}
+                </td>
+                <td>
+                  <button
+                    className={styles.dangerBtn}
+                    onClick={() => handleDelete(post)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}

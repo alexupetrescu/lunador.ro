@@ -2,6 +2,8 @@
 
 import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
 
+import { resolveMediaUrl } from "@/lib/media-url";
+
 import { addAssets, useAsset } from "./mediaStore";
 import { moveNode } from "./nodeCommands";
 import { openMediaPicker } from "./pickerBridge";
@@ -46,7 +48,7 @@ export default function MediaBlockView({
       ) : (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className={styles.nodeImg} src={asset.url ?? ""} alt={asset.alt_text} />
+          <img className={styles.nodeImg} src={resolveMediaUrl(asset.url) ?? ""} alt={asset.alt_text} />
           {asset.caption ? (
             <div className={styles.nodeCaption}>{asset.caption}</div>
           ) : null}

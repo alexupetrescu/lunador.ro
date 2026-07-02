@@ -40,6 +40,8 @@ export interface MediaAsset {
 
 export interface MediaAssetAdmin extends MediaAsset {
   tags: MediaTag[];
+  uploaded_by: number | null;
+  uploaded_by_detail: { id: number; name: string } | null;
   created_at: string;
 }
 
@@ -121,6 +123,7 @@ export interface PostAdmin {
   og_image: number | null;
   og_image_detail: MediaAsset | null;
   category: number | null;
+  category_detail: Category | null;
   tags: Tag[];
   seo_title: string;
   seo_description: string;

@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import MediaPicker from "@/components/admin/MediaPicker";
 import Editor from "@/components/editor/Editor";
 import {
+  deletePost,
   getAdminPost,
   listCategories,
   listRevisions,
@@ -18,6 +19,8 @@ import {
   updatePost,
 } from "@/lib/browser-api";
 import { CRM_BASE, crmPath } from "@/lib/crm";
+import { resolveMediaUrl } from "@/lib/media-url";
+import { slugify } from "@/lib/slugify";
 import type {
   Category,
   MediaAsset,
@@ -41,12 +44,14 @@ function toLocalInput(iso: string | null): string {
 
 export default function PostEditorPage() {
   const params = useParams<{ slug: string }>();
+  const router = useRouter();
 
   const [post, setPost] = useState<PostAdmin | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [allTags, setAllTags] = useState<Tag[]>([]);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [featuredPicker, setFeaturedPicker] = useState(false);
+  const [ogPicker, setOgPicker] = useState(false);
   const [scheduleAt, setScheduleAt] = useState("");
   const [showHistory, setShowHistory] = useState(false);
   const [revisions, setRevisions] = useState<PostRevision[]>([]);
@@ -55,6 +60,7 @@ export default function PostEditorPage() {
   const bodyRef = useRef<TiptapDoc | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentSlug = useRef<string>(params.slug);
+  const slugEdited = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -68,6 +74,11 @@ export default function PostEditorPage() {
       setPost(p);
       bodyRef.current = p.body;
       currentSlug.current = p.slug;
+      // Keep auto-slugging only while the slug still tracks the title (or is
+      // an auto-generated "untitled..." placeholder).
+      slugEdited.current = !(
+        p.slug === slugify(p.title) || p.slug.startsWith("untitled")
+      );
       setScheduleAt(toLocalInput(p.published_at));
       setCategories(cats.results);
       setAllTags(tags.results);
@@ -106,6 +117,27 @@ export default function PostEditorPage() {
     scheduleSave({ [key]: value } as Partial<PostAdmin>);
   }
 
+  function handleTitleChange(value: string) {
+    // Auto-fill the slug from the title on drafts until it's edited by hand.
+    const autoSlug =
+      !slugEdited.current && post?.status === "draft"
+        ? slugify(value) || "untitled"
+        : null;
+    setPost((prev) =>
+      prev
+        ? { ...prev, title: value, ...(autoSlug ? { slug: autoSlug } : {}) }
+        : prev,
+    );
+    scheduleSave(
+      autoSlug ? { title: value, slug: autoSlug } : { title: value },
+    );
+  }
+
+  function handleSlugChange(value: string) {
+    slugEdited.current = true;
+    updateField("slug", value);
+  }
+
   function handleBodyChange(doc: TiptapDoc) {
     bodyRef.current = doc;
     scheduleSave({ body: doc });
@@ -134,6 +166,17 @@ export default function PostEditorPage() {
     const updated = await schedulePost(currentSlug.current, iso);
     setPost((prev) => (prev ? { ...prev, ...updated } : updated));
     setSaveState("saved");
+  }
+
+  async function handleDelete() {
+    if (!post) return;
+    const ok = window.confirm(
+      `Delete "${post.title || "Untitled"}"? This cannot be undone.`,
+    );
+    if (!ok) return;
+    if (timer.current) clearTimeout(timer.current);
+    await deletePost(currentSlug.current);
+    router.push(CRM_BASE);
   }
 
   async function openHistory() {
@@ -171,6 +214,17 @@ export default function PostEditorPage() {
     setFeaturedPicker(false);
   }
 
+  function setOgImage(asset: MediaAsset | null) {
+    if (!post) return;
+    setPost({
+      ...post,
+      og_image: asset?.id ?? null,
+      og_image_detail: asset ?? null,
+    });
+    scheduleSave({ og_image: asset?.id ?? null });
+    setOgPicker(false);
+  }
+
   if (!post) {
     return <p className={styles.muted}>Loading…</p>;
   }
@@ -193,6 +247,9 @@ export default function PostEditorPage() {
           <button className={styles.secondaryBtn} onClick={openHistory}>
             History
           </button>
+          <button className={styles.dangerBtn} onClick={handleDelete}>
+            Delete
+          </button>
         </div>
       </div>
 
@@ -202,14 +259,14 @@ export default function PostEditorPage() {
             className={styles.titleInput}
             value={post.title}
             placeholder="Title"
-            onChange={(e) => updateField("title", e.target.value)}
+            onChange={(e) => handleTitleChange(e.target.value)}
           />
           <div className={styles.slugRow}>
             <span>/blog/</span>
             <input
               className={styles.slugInput}
               value={post.slug}
-              onChange={(e) => updateField("slug", e.target.value)}
+              onChange={(e) => handleSlugChange(e.target.value)}
             />
           </div>
 
@@ -276,7 +333,7 @@ export default function PostEditorPage() {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={post.featured_image_detail.url}
+                  src={resolveMediaUrl(post.featured_image_detail.url) ?? ""}
                   alt={post.featured_image_detail.alt_text}
                 />
                 Change
@@ -389,6 +446,28 @@ export default function PostEditorPage() {
               />
               Hide from search engines (noindex)
             </label>
+            <span className={styles.label} style={{ marginBottom: 6 }}>
+              Social share image (og:image)
+            </span>
+            {post.og_image_detail?.url ? (
+              <div className={styles.thumbPicker} onClick={() => setOgPicker(true)}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={resolveMediaUrl(post.og_image_detail.url) ?? ""}
+                  alt={post.og_image_detail.alt_text}
+                />
+                Change
+              </div>
+            ) : (
+              <div className={styles.thumbPicker} onClick={() => setOgPicker(true)}>
+                Choose image (falls back to featured)
+              </div>
+            )}
+            {post.og_image ? (
+              <button className={styles.secondaryBtn} onClick={() => setOgImage(null)}>
+                Remove
+              </button>
+            ) : null}
           </div>
         </aside>
       </div>
@@ -397,6 +476,13 @@ export default function PostEditorPage() {
         <MediaPicker
           onSelect={(assets) => setFeatured(assets[0] ?? null)}
           onClose={() => setFeaturedPicker(false)}
+        />
+      ) : null}
+
+      {ogPicker ? (
+        <MediaPicker
+          onSelect={(assets) => setOgImage(assets[0] ?? null)}
+          onClose={() => setOgPicker(false)}
         />
       ) : null}
 

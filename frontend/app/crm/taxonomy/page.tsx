@@ -10,17 +10,10 @@ import {
   listCategories,
   listTags,
 } from "@/lib/browser-api";
+import { slugify } from "@/lib/slugify";
 import type { Category, Tag } from "@/lib/types";
 
 import styles from "../crm.module.css";
-
-function slugify(value: string): string {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
 
 export default function TaxonomyPage() {
   const [categories, setCategories] = useState<Category[]>([]);

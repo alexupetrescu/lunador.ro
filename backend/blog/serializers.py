@@ -118,6 +118,7 @@ class PostAuthoringSerializer(serializers.ModelSerializer):
         source="featured_image", read_only=True
     )
     og_image_detail = MediaAssetHydratedSerializer(source="og_image", read_only=True)
+    category_detail = CategorySerializer(source="category", read_only=True)
     media = serializers.SerializerMethodField()
 
     class Meta:
@@ -137,6 +138,7 @@ class PostAuthoringSerializer(serializers.ModelSerializer):
             "og_image",
             "og_image_detail",
             "category",
+            "category_detail",
             "tags",
             "tag_ids",
             "seo_title",
