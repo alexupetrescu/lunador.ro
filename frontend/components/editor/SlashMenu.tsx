@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 
-import styles from "@/app/admin/admin.module.css";
+import styles from "@/app/crm/crm.module.css";
 
 export interface SlashItem {
   title: string;

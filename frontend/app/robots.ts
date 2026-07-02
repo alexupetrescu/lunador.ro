@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       // General crawlers.
-      { userAgent: "*", allow: "/", disallow: ["/admin", "/api"] },
+      { userAgent: "*", allow: "/", disallow: ["/crm", "/api"] },
       // LLM crawlers — explicitly allowed: for a blog you want to be cited.
       { userAgent: "GPTBot", allow: "/" },
       { userAgent: "ClaudeBot", allow: "/" },

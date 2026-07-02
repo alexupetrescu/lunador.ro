@@ -12,7 +12,7 @@ import {
 } from "@/lib/browser-api";
 import type { Category, Tag } from "@/lib/types";
 
-import styles from "../admin.module.css";
+import styles from "../crm.module.css";
 
 function slugify(value: string): string {
   return value

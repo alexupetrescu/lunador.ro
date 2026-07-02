@@ -6,16 +6,17 @@ import { useEffect } from "react";
 
 import { AuthProvider, useAuth } from "@/components/admin/AuthProvider";
 import Logo from "@/components/site/Logo";
+import { CRM_BASE, crmPath } from "@/lib/crm";
 
-import styles from "./admin.module.css";
+import styles from "./crm.module.css";
 
-function AdminShell({ children }: { children: React.ReactNode }) {
+function CrmShell({ children }: { children: React.ReactNode }) {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!loading && !user) router.replace("/admin/login");
+    if (!loading && !user) router.replace(crmPath("/login"));
   }, [loading, user, router]);
 
   if (loading) {
@@ -26,9 +27,9 @@ function AdminShell({ children }: { children: React.ReactNode }) {
   }
 
   const navItems = [
-    { href: "/admin", label: "Posts" },
-    { href: "/admin/media", label: "Media" },
-    { href: "/admin/taxonomy", label: "Taxonomy" },
+    { href: CRM_BASE, label: "Posts" },
+    { href: crmPath("/media"), label: "Media" },
+    { href: crmPath("/taxonomy"), label: "Taxonomy" },
   ];
 
   return (
@@ -40,8 +41,8 @@ function AdminShell({ children }: { children: React.ReactNode }) {
         <nav className={styles.nav}>
           {navItems.map((item) => {
             const active =
-              item.href === "/admin"
-                ? pathname === "/admin"
+              item.href === CRM_BASE
+                ? pathname === CRM_BASE
                 : pathname.startsWith(item.href);
             return (
               <Link
@@ -66,7 +67,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AdminLayout({
+export default function CrmLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -75,7 +76,7 @@ export default function AdminLayout({
 
   return (
     <AuthProvider>
-      {pathname === "/admin/login" ? children : <AdminShell>{children}</AdminShell>}
+      {pathname === crmPath("/login") ? children : <CrmShell>{children}</CrmShell>}
     </AuthProvider>
   );
 }

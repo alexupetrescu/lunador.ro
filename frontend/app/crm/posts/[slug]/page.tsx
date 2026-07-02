@@ -17,6 +17,7 @@ import {
   unpublishPost,
   updatePost,
 } from "@/lib/browser-api";
+import { CRM_BASE, crmPath } from "@/lib/crm";
 import type {
   Category,
   MediaAsset,
@@ -26,7 +27,7 @@ import type {
   TiptapDoc,
 } from "@/lib/types";
 
-import styles from "../../admin.module.css";
+import styles from "../../crm.module.css";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
@@ -85,7 +86,7 @@ export default function PostEditorPage() {
       setSaveState("saved");
       // Keep the URL in sync if the slug changed.
       if (updated.slug !== params.slug) {
-        window.history.replaceState(null, "", `/admin/posts/${updated.slug}`);
+        window.history.replaceState(null, "", crmPath(`/posts/${updated.slug}`));
       }
     } catch {
       setSaveState("error");
@@ -184,7 +185,7 @@ export default function PostEditorPage() {
   return (
     <div>
       <div className={styles.pageHeader}>
-        <Link href="/admin" className={styles.rowLink}>
+        <Link href={CRM_BASE} className={styles.rowLink}>
           ← Posts
         </Link>
         <div style={{ display: "flex", gap: 14, alignItems: "center" }}>

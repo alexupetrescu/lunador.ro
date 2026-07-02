@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { listMedia, uploadMedia } from "@/lib/browser-api";
 import type { MediaAssetAdmin } from "@/lib/types";
 
-import styles from "@/app/admin/admin.module.css";
+import styles from "@/app/crm/crm.module.css";
 
 interface MediaPickerProps {
   multiple?: boolean;

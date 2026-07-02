@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { fetchMe, logout as apiLogout } from "@/lib/browser-api";
+import { crmPath } from "@/lib/crm";
 import type { CurrentUser } from "@/lib/types";
 
 interface AuthState {
@@ -42,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(async () => {
     await apiLogout();
     setUser(null);
-    router.push("/admin/login");
+    router.push(crmPath("/login"));
   }, [router]);
 
   return (

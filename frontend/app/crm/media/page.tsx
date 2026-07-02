@@ -10,7 +10,7 @@ import {
 } from "@/lib/browser-api";
 import type { MediaAssetAdmin } from "@/lib/types";
 
-import styles from "../admin.module.css";
+import styles from "../crm.module.css";
 
 export default function MediaManagerPage() {
   const [assets, setAssets] = useState<MediaAssetAdmin[]>([]);

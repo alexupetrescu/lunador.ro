@@ -6,7 +6,7 @@ import { addAssets, useAsset } from "./mediaStore";
 import { moveNode } from "./nodeCommands";
 import { openMediaPicker } from "./pickerBridge";
 
-import styles from "@/app/admin/admin.module.css";
+import styles from "@/app/crm/crm.module.css";
 
 function GalleryThumb({ id }: { id: number }) {
   const asset = useAsset(id);

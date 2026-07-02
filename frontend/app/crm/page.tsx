@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import { createPost, listAdminPosts } from "@/lib/browser-api";
+import { crmPath } from "@/lib/crm";
 import type { PostAdmin } from "@/lib/types";
 
-import styles from "./admin.module.css";
+import styles from "./crm.module.css";
 
 const STATUS_CLASS: Record<string, string> = {
   draft: styles.badgeDraft,
@@ -20,7 +21,7 @@ function emptyDoc() {
   return { type: "doc" as const, content: [{ type: "paragraph" }] };
 }
 
-export default function AdminPostsPage() {
+export default function CrmPostsPage() {
   const router = useRouter();
   const [posts, setPosts] = useState<PostAdmin[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +50,7 @@ export default function AdminPostsPage() {
         body: emptyDoc(),
         status: "draft",
       });
-      router.push(`/admin/posts/${post.slug}`);
+      router.push(crmPath(`/posts/${post.slug}`));
     } finally {
       setCreating(false);
     }
@@ -86,7 +87,10 @@ export default function AdminPostsPage() {
             {posts.map((post) => (
               <tr key={post.id}>
                 <td>
-                  <Link href={`/admin/posts/${post.slug}`} className={styles.rowLink}>
+                  <Link
+                    href={crmPath(`/posts/${post.slug}`)}
+                    className={styles.rowLink}
+                  >
                     {post.title || "Untitled"}
                   </Link>
                 </td>

@@ -14,7 +14,7 @@ import { seedFromMediaMap } from "./mediaStore";
 import { registerPicker, type PickerOptions } from "./pickerBridge";
 import { SlashCommand } from "./SlashCommand";
 
-import styles from "@/app/admin/admin.module.css";
+import styles from "@/app/crm/crm.module.css";
 
 interface EditorProps {
   initialContent: TiptapDoc;

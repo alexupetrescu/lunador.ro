@@ -6,8 +6,9 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/components/admin/AuthProvider";
 import Logo from "@/components/site/Logo";
 import { ensureCsrf, login } from "@/lib/browser-api";
+import { CRM_BASE } from "@/lib/crm";
 
-import styles from "../admin.module.css";
+import styles from "../crm.module.css";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function LoginPage() {
   }, []);
 
   useEffect(() => {
-    if (user) router.replace("/admin");
+    if (user) router.replace(CRM_BASE);
   }, [user, router]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -33,7 +34,7 @@ export default function LoginPage() {
       await ensureCsrf();
       await login(username, password);
       await refresh();
-      router.replace("/admin");
+      router.replace(CRM_BASE);
     } catch {
       setError("Invalid username or password.");
     } finally {
