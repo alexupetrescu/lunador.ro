@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   deleteMedia,
+  formatApiError,
   listMedia,
   updateMedia,
   uploadMedia,
@@ -17,6 +18,7 @@ export default function MediaManagerPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const [editing, setEditing] = useState<MediaAssetAdmin | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -40,12 +42,15 @@ export default function MediaManagerPage() {
 
   const handleFiles = useCallback(async (files: FileList | File[]) => {
     setUploading(true);
+    setUploadError(null);
     try {
       const uploaded: MediaAssetAdmin[] = [];
       for (const file of Array.from(files)) {
         uploaded.push(await uploadMedia(file));
       }
       setAssets((prev) => [...uploaded, ...prev]);
+    } catch (error) {
+      setUploadError(formatApiError(error));
     } finally {
       setUploading(false);
     }
@@ -103,6 +108,8 @@ export default function MediaManagerPage() {
           style={{ maxWidth: 300 }}
         />
       </div>
+
+      {uploadError ? <p className={styles.error}>{uploadError}</p> : null}
 
       <div
         className={`${styles.dropzone} ${dragging ? styles.dropzoneActive : ""}`}

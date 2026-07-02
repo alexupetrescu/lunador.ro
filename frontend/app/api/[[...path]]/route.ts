@@ -28,15 +28,20 @@ async function proxy(request: NextRequest, path: string[]) {
   headers.set("x-forwarded-host", incoming.host);
   headers.set("x-forwarded-proto", incoming.protocol.replace(":", ""));
 
-  const init: RequestInit = {
+  const init: RequestInit & { duplex?: "half" } = {
     method: request.method,
     headers,
-    // Follow Django APPEND_SLASH redirects server-side so the browser never
-    // caches a 301/308 loop between Next and Django.
     redirect: "follow",
   };
   if (request.method !== "GET" && request.method !== "HEAD") {
-    init.body = await request.arrayBuffer();
+    const contentType = request.headers.get("content-type") ?? "";
+    if (contentType.includes("multipart/form-data") && request.body) {
+      // Stream multipart bodies — buffering can strip boundaries in dev.
+      init.body = request.body;
+      init.duplex = "half";
+    } else {
+      init.body = await request.arrayBuffer();
+    }
   }
 
   const upstream = await fetch(target, init);

@@ -33,4 +33,6 @@ class MediaAssetViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user if self.request.user.is_authenticated else None
-        serializer.save(uploaded_by=user)
+        instance = serializer.save(uploaded_by=user)
+        instance.refresh_from_db()
+        serializer.instance = instance

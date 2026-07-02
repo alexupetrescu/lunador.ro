@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { listMedia, uploadMedia } from "@/lib/browser-api";
+import { formatApiError, listMedia, uploadMedia } from "@/lib/browser-api";
 import type { MediaAssetAdmin } from "@/lib/types";
 
 import styles from "@/app/crm/crm.module.css";
@@ -23,6 +23,7 @@ export default function MediaPicker({
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -43,12 +44,15 @@ export default function MediaPicker({
 
   const handleFiles = useCallback(async (files: FileList | File[]) => {
     setUploading(true);
+    setUploadError(null);
     try {
       const uploaded: MediaAssetAdmin[] = [];
       for (const file of Array.from(files)) {
         uploaded.push(await uploadMedia(file));
       }
       setAssets((prev) => [...uploaded, ...prev]);
+    } catch (error) {
+      setUploadError(formatApiError(error));
     } finally {
       setUploading(false);
     }
@@ -106,6 +110,8 @@ export default function MediaPicker({
             }}
           />
         </div>
+
+        {uploadError ? <p className={styles.error}>{uploadError}</p> : null}
 
         <div
           className={`${styles.dropzone} ${dragging ? styles.dropzoneActive : ""}`}

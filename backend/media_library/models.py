@@ -24,7 +24,12 @@ class MediaAsset(models.Model):
         VIDEO = "video", "Video"
         FILE = "file", "File"
 
-    kind = models.CharField(max_length=10, choices=Kind.choices)
+    kind = models.CharField(
+        max_length=10,
+        choices=Kind.choices,
+        blank=True,
+        default="",
+    )
     file = models.FileField(upload_to="media/%Y/%m/")
     title = models.CharField(max_length=255, blank=True)
     alt_text = models.CharField(max_length=500, blank=True)

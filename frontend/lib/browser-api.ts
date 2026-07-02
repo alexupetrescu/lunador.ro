@@ -27,6 +27,24 @@ export class ApiError extends Error {
   }
 }
 
+export function formatApiError(error: unknown): string {
+  if (error instanceof ApiError) {
+    const data = error.data;
+    if (typeof data === "object" && data !== null) {
+      const parts: string[] = [];
+      for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
+        const msg = Array.isArray(value) ? value.join(" ") : String(value);
+        parts.push(key === "detail" ? msg : `${key}: ${msg}`);
+      }
+      if (parts.length) return parts.join(" · ");
+    }
+    if (typeof data === "string" && data) return data;
+    return `Request failed (${error.status})`;
+  }
+  if (error instanceof Error) return error.message;
+  return "Something went wrong.";
+}
+
 type Json = Record<string, unknown> | unknown[];
 
 async function request<T>(
@@ -163,6 +181,7 @@ export async function getMediaAsset(id: number) {
 }
 
 export async function uploadMedia(file: File, fields: Record<string, string> = {}) {
+  await ensureCsrf();
   const form = new FormData();
   form.append("file", file);
   for (const [key, value] of Object.entries(fields)) form.append(key, value);
