@@ -29,7 +29,13 @@ Thumbs.db
 
 # Backups
 backups/
+backup/
 *.dump
 *.sql
 *.sql.gz
 *.tar.gz
+
+# Basic log commands
+basic_log_commands.txt  
+
+design/
