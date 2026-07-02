@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { AuthProvider, useAuth } from "@/components/admin/AuthProvider";
+import Logo from "@/components/site/Logo";
 
 import styles from "./admin.module.css";
 
@@ -27,12 +28,15 @@ function AdminShell({ children }: { children: React.ReactNode }) {
   const navItems = [
     { href: "/admin", label: "Posts" },
     { href: "/admin/media", label: "Media" },
+    { href: "/admin/taxonomy", label: "Taxonomy" },
   ];
 
   return (
     <div className={styles.app}>
       <aside className={styles.sidebar}>
-        <div className={styles.brand}>lunador</div>
+        <div className={styles.brand}>
+          <Logo size="sm" dark href="/" />
+        </div>
         <nav className={styles.nav}>
           {navItems.map((item) => {
             const active =

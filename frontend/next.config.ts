@@ -4,12 +4,10 @@ const djangoTarget =
   process.env.DJANGO_API_PROXY_TARGET || "http://127.0.0.1:8000";
 
 const nextConfig: NextConfig = {
+  // Keep trailing slashes on proxied Django API paths (see app/api/[[...path]]/route.ts).
+  skipTrailingSlashRedirect: true,
   async rewrites() {
     return [
-      {
-        source: "/api/:path*",
-        destination: `${djangoTarget}/api/:path*`,
-      },
       {
         // Django-served media originals; kept same-origin so next/image can
         // optimize them and session cookies stay first-party.

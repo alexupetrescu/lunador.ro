@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
@@ -7,7 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Category, Post, SlugRedirect, Tag
+from .filters import PostgresSearchFilter
+from .models import Category, Post, PostRevision, SlugRedirect, Tag
 from .serializers import (
     CategorySerializer,
     PostAuthoringSerializer,
@@ -34,9 +36,8 @@ class PublicPostViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewse
     """Read-only, public-safe posts (only content that is live right now)."""
 
     lookup_field = "slug"
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filter_backends = [DjangoFilterBackend, PostgresSearchFilter]
     filterset_fields = {"category__slug": ["exact"], "tags__slug": ["exact"]}
-    search_fields = ["title", "body_text"]
 
     def get_queryset(self):
         return (
@@ -65,9 +66,8 @@ class AdminPostViewSet(viewsets.ModelViewSet):
     serializer_class = PostAuthoringSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = "slug"
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, PostgresSearchFilter, filters.OrderingFilter]
     filterset_fields = ["status", "category__slug"]
-    search_fields = ["title", "body_text"]
     ordering_fields = ["updated_at", "published_at", "title"]
     ordering = ["-updated_at"]
 
@@ -92,6 +92,24 @@ class AdminPostViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(post).data)
 
     @action(detail=True, methods=["post"])
+    def schedule(self, request, slug=None):
+        raw = request.data.get("published_at")
+        when = parse_datetime(raw) if raw else None
+        if when is None:
+            return Response(
+                {"published_at": "A valid ISO datetime is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if timezone.is_naive(when):
+            when = timezone.make_aware(when)
+        post = self.get_object()
+        post.status = Post.Status.SCHEDULED
+        post.published_at = when
+        post.save()
+        post.snapshot_revision(user=request.user)
+        return Response(self.get_serializer(post).data)
+
+    @action(detail=True, methods=["post"])
     def unpublish(self, request, slug=None):
         post = self.get_object()
         post.status = Post.Status.DRAFT
@@ -109,3 +127,32 @@ class AdminPostViewSet(viewsets.ModelViewSet):
         return Response(
             PostRevisionSerializer(post.revisions.all(), many=True).data
         )
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="revisions/(?P<rev_id>[0-9]+)/restore",
+    )
+    def restore(self, request, slug=None, rev_id=None):
+        post = self.get_object()
+        revision = get_object_or_404(PostRevision, pk=rev_id, post=post)
+        # Snapshot the current state first so a restore is itself undoable.
+        post.snapshot_revision(user=request.user)
+        post.title = revision.title
+        post.body = revision.body
+        post.save()
+        return Response(self.get_serializer(post).data)
+
+
+class AdminCategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "slug"
+
+
+class AdminTagViewSet(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "slug"

@@ -2,9 +2,9 @@
   display: grid;
   grid-template-columns: 220px 1fr;
   min-height: 100vh;
-  font-family: var(--font-spline-mono), ui-sans-serif, system-ui, sans-serif;
-  color: #2a2520;
-  background: #faf8f2;
+  font-family: var(--font-mono);
+  color: var(--ink);
+  background: var(--paper);
 }
 
 .centered {
@@ -12,15 +12,16 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  color: #6b6053;
-  font-family: var(--font-spline-mono), monospace;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  background: var(--paper);
 }
 
 /* Sidebar -------------------------------------------------------------------- */
 
 .sidebar {
-  background: #2a2520;
-  color: #f3efe4;
+  background: var(--dark);
+  color: var(--paper);
   padding: 24px 18px;
   display: flex;
   flex-direction: column;
@@ -31,9 +32,6 @@
 }
 
 .brand {
-  font-family: var(--font-newsreader), serif;
-  font-size: 22px;
-  letter-spacing: 0.01em;
   margin-bottom: 24px;
 }
 

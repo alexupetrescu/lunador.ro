@@ -1,0 +1,168 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+
+import { formatPostDateShort } from "@/lib/format";
+import { listPosts } from "@/lib/server-api";
+import { siteConfig } from "@/lib/site";
+
+import styles from "./blog.module.css";
+
+export const metadata: Metadata = {
+  title: `The Field Notes — ${siteConfig.name}`,
+  description: siteConfig.description,
+  alternates: {
+    canonical: "/blog",
+    types: { "application/rss+xml": "/feed.xml" },
+  },
+};
+
+const TABS = [
+  { label: "All", slug: "" },
+  { label: "Philosophy", slug: "philosophy" },
+  { label: "Astrophysics", slug: "astrophysics" },
+] as const;
+
+function pageHref(
+  page: number,
+  params: { category?: string; tag?: string; search?: string },
+): string {
+  const qs = new URLSearchParams();
+  if (page > 1) qs.set("page", String(page));
+  if (params.category) qs.set("category", params.category);
+  if (params.tag) qs.set("tag", params.tag);
+  if (params.search) qs.set("search", params.search);
+  const s = qs.toString();
+  return `/blog${s ? `?${s}` : ""}`;
+}
+
+function tabHref(slug: string, search?: string): string {
+  const qs = new URLSearchParams();
+  if (slug) qs.set("category", slug);
+  if (search) qs.set("search", search);
+  const s = qs.toString();
+  return `/blog${s ? `?${s}` : ""}`;
+}
+
+interface BlogPageProps {
+  searchParams: Promise<{
+    page?: string;
+    category?: string;
+    tag?: string;
+    search?: string;
+  }>;
+}
+
+export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
+  const params = await searchParams;
+  const page = params.page ? Number(params.page) : 1;
+  const search = params.search?.trim() || undefined;
+  const category = params.category || "";
+  const data = await listPosts({
+    page,
+    category: params.category,
+    tag: params.tag,
+    search,
+  });
+
+  const posts = data?.results ?? [];
+  const count = data?.count ?? posts.length;
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.eyebrow}>
+        The catalogue · {count} {count === 1 ? "entry" : "entries"} on file
+      </div>
+      <h1 className={styles.title}>The Field Notes</h1>
+      <p className={styles.lede}>
+        Everything we have logged so far, kept like an old observatory&apos;s plate
+        register — two long-running threads, one looking out, one looking in.
+      </p>
+
+      <form className={styles.searchForm} action="/blog" method="get">
+        {category ? <input type="hidden" name="category" value={category} /> : null}
+        <input
+          className={styles.searchInput}
+          type="search"
+          name="search"
+          placeholder="Search the register…"
+          defaultValue={search ?? ""}
+          aria-label="Search posts"
+        />
+      </form>
+
+      {search ? (
+        <p className={styles.searchNote}>
+          {posts.length
+            ? `Results for “${search}”`
+            : `No results for “${search}”.`}{" "}
+          <Link href={tabHref(category, undefined)}>Clear</Link>
+        </p>
+      ) : null}
+
+      <div className={styles.tabs} role="tablist" aria-label="Filter by category">
+        {TABS.map((tab) => {
+          const active = tab.slug === category;
+          return (
+            <Link
+              key={tab.label}
+              href={tabHref(tab.slug, search)}
+              className={`${styles.tab} ${active ? styles.tabActive : ""}`}
+              role="tab"
+              aria-selected={active}
+            >
+              {tab.label}
+            </Link>
+          );
+        })}
+      </div>
+
+      {posts.length === 0 ? (
+        search || category ? null : (
+          <p className={styles.empty}>Nothing published yet — check back soon.</p>
+        )
+      ) : (
+        posts.map((post) => (
+          <Link key={post.id} href={`/blog/${post.slug}`} className={styles.row}>
+            <div className={styles.rowCat}>
+              {post.category?.name?.slice(0, 12) ?? "Essay"}
+            </div>
+            <div>
+              <h3 className={styles.rowTitle}>{post.title}</h3>
+              <p className={styles.rowDek}>{post.excerpt}</p>
+            </div>
+            <div className={styles.rowMeta}>
+              <div className={styles.rowMetaStream}>
+                {post.category?.name ?? "Essay"}
+              </div>
+              <div>{formatPostDateShort(post.published_at)}</div>
+              {post.reading_time ? (
+                <div>{post.reading_time} min read</div>
+              ) : null}
+            </div>
+          </Link>
+        ))
+      )}
+
+      {data && (data.previous || data.next) ? (
+        <nav className={styles.pager} aria-label="Pagination">
+          {data.previous ? (
+            <Link href={pageHref(page - 1, params)}>← Newer</Link>
+          ) : (
+            <span />
+          )}
+          {data.next ? (
+            <Link href={pageHref(page + 1, params)}>Older →</Link>
+          ) : (
+            <span />
+          )}
+        </nav>
+      ) : (
+        posts.length > 0 && (
+          <div className={styles.endNote}>
+            — end of register · the plates continue every other Sunday —
+          </div>
+        )
+      )}
+    </main>
+  );
+}

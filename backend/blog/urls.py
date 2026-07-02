@@ -2,7 +2,9 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (
+    AdminCategoryViewSet,
     AdminPostViewSet,
+    AdminTagViewSet,
     CategoryViewSet,
     PublicPostViewSet,
     SlugRedirectView,
@@ -16,6 +18,8 @@ public_router.register("tags", TagViewSet, basename="tag")
 
 admin_router = DefaultRouter()
 admin_router.register("posts", AdminPostViewSet, basename="admin-post")
+admin_router.register("categories", AdminCategoryViewSet, basename="admin-category")
+admin_router.register("tags", AdminTagViewSet, basename="admin-tag")
 
 urlpatterns = [
     path("redirects/<slug:old_slug>/", SlugRedirectView.as_view(), name="slug-redirect"),

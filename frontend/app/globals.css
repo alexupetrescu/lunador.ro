@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+:root {
+  --paper: #f3efe4;
+  --paper-muted: #efe9db;
+  --ink: #2a2520;
+  --ink-soft: #332e27;
+  --gold: #9c7a3f;
+  --gold-dark: #c69a52;
+  --border: #d9cfba;
+  --border-light: #e3dac6;
+  --muted: #6b6053;
+  --muted-light: #8a8073;
+  --dark: #2a2520;
+  --dark-text: #e9e2d2;
+  --dark-muted: #a89a7c;
+  --content-max: 1180px;
+  --prose-max: 760px;
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-mono: var(--font-spline-mono), ui-monospace, monospace;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -7,12 +27,18 @@
 html,
 body {
   margin: 0;
-  height: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-serif);
+  color: var(--ink);
+  background: var(--paper);
 }
 
 ::selection {
-  background: #9c7a3f;
-  color: #f3efe4;
+  background: var(--gold);
+  color: var(--paper);
 }
 
 @keyframes tw {
@@ -23,4 +49,8 @@ body {
   50% {
     opacity: 0.95;
   }
+}
+
+a {
+  color: inherit;
 }

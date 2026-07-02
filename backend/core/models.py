@@ -12,7 +12,10 @@ class PublishedQuerySet(models.QuerySet):
 
     def live(self):
         return self.filter(
-            status=Publishable.Status.PUBLISHED,
+            status__in=[
+                Publishable.Status.PUBLISHED,
+                Publishable.Status.SCHEDULED,
+            ],
             published_at__lte=timezone.now(),
         )
 

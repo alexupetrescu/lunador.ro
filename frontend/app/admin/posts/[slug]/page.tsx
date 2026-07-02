@@ -9,8 +9,11 @@ import Editor from "@/components/editor/Editor";
 import {
   getAdminPost,
   listCategories,
+  listRevisions,
   listTags,
   publishPost,
+  restoreRevision,
+  schedulePost,
   unpublishPost,
   updatePost,
 } from "@/lib/browser-api";
@@ -18,6 +21,7 @@ import type {
   Category,
   MediaAsset,
   PostAdmin,
+  PostRevision,
   Tag,
   TiptapDoc,
 } from "@/lib/types";
@@ -25,6 +29,14 @@ import type {
 import styles from "../../admin.module.css";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
+
+/** Format an ISO timestamp for a <input type="datetime-local"> value. */
+function toLocalInput(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
 
 export default function PostEditorPage() {
   const params = useParams<{ slug: string }>();
@@ -34,6 +46,10 @@ export default function PostEditorPage() {
   const [allTags, setAllTags] = useState<Tag[]>([]);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [featuredPicker, setFeaturedPicker] = useState(false);
+  const [scheduleAt, setScheduleAt] = useState("");
+  const [showHistory, setShowHistory] = useState(false);
+  const [revisions, setRevisions] = useState<PostRevision[]>([]);
+  const [editorKey, setEditorKey] = useState(0);
 
   const bodyRef = useRef<TiptapDoc | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -51,6 +67,7 @@ export default function PostEditorPage() {
       setPost(p);
       bodyRef.current = p.body;
       currentSlug.current = p.slug;
+      setScheduleAt(toLocalInput(p.published_at));
       setCategories(cats.results);
       setAllTags(tags.results);
     })();
@@ -108,6 +125,30 @@ export default function PostEditorPage() {
     setPost((prev) => (prev ? { ...prev, ...updated } : updated));
   }
 
+  async function handleSchedule() {
+    if (!post || !scheduleAt) return;
+    if (timer.current) clearTimeout(timer.current);
+    await persist({ body: bodyRef.current ?? post.body });
+    const iso = new Date(scheduleAt).toISOString();
+    const updated = await schedulePost(currentSlug.current, iso);
+    setPost((prev) => (prev ? { ...prev, ...updated } : updated));
+    setSaveState("saved");
+  }
+
+  async function openHistory() {
+    const revs = await listRevisions(currentSlug.current);
+    setRevisions(revs);
+    setShowHistory(true);
+  }
+
+  async function handleRestore(revisionId: number) {
+    const updated = await restoreRevision(currentSlug.current, revisionId);
+    setPost((prev) => (prev ? { ...prev, ...updated } : updated));
+    bodyRef.current = updated.body;
+    setEditorKey((k) => k + 1);
+    setShowHistory(false);
+  }
+
   function toggleTag(tag: Tag) {
     if (!post) return;
     const has = post.tags.some((t) => t.id === tag.id);
@@ -146,7 +187,12 @@ export default function PostEditorPage() {
         <Link href="/admin" className={styles.rowLink}>
           ← Posts
         </Link>
-        <span className={styles.saveState}>{saveLabel[saveState]}</span>
+        <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+          <span className={styles.saveState}>{saveLabel[saveState]}</span>
+          <button className={styles.secondaryBtn} onClick={openHistory}>
+            History
+          </button>
+        </div>
       </div>
 
       <div className={styles.editorGrid}>
@@ -167,6 +213,7 @@ export default function PostEditorPage() {
           </div>
 
           <Editor
+            key={editorKey}
             initialContent={post.body}
             mediaMap={post.media}
             onChange={handleBodyChange}
@@ -194,6 +241,28 @@ export default function PostEditorPage() {
               >
                 View live ↗
               </Link>
+            ) : null}
+
+            <label className={styles.label} style={{ marginTop: 4 }}>
+              Schedule for
+              <input
+                className={styles.input}
+                type="datetime-local"
+                value={scheduleAt}
+                onChange={(e) => setScheduleAt(e.target.value)}
+              />
+            </label>
+            <button
+              className={styles.secondaryBtn}
+              onClick={handleSchedule}
+              disabled={!scheduleAt}
+            >
+              {post.status === "scheduled" ? "Reschedule" : "Schedule"}
+            </button>
+            {post.status === "scheduled" && post.published_at ? (
+              <p className={styles.muted}>
+                Goes live {new Date(post.published_at).toLocaleString()}
+              </p>
             ) : null}
           </div>
 
@@ -328,6 +397,55 @@ export default function PostEditorPage() {
           onSelect={(assets) => setFeatured(assets[0] ?? null)}
           onClose={() => setFeaturedPicker(false)}
         />
+      ) : null}
+
+      {showHistory ? (
+        <div className={styles.overlay} onClick={() => setShowHistory(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.pageTitle}>Revision history</h2>
+              <button
+                className={styles.secondaryBtn}
+                onClick={() => setShowHistory(false)}
+              >
+                Close
+              </button>
+            </div>
+            {revisions.length === 0 ? (
+              <p className={styles.muted}>
+                No revisions yet. Snapshots are saved on publish.
+              </p>
+            ) : (
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Saved</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {revisions.map((rev) => (
+                    <tr key={rev.id}>
+                      <td>{rev.title || "Untitled"}</td>
+                      <td className={styles.muted}>
+                        {new Date(rev.created_at).toLocaleString()}
+                      </td>
+                      <td>
+                        <button
+                          className={styles.secondaryBtn}
+                          onClick={() => handleRestore(rev.id)}
+                        >
+                          Restore
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
       ) : null}
     </div>
   );

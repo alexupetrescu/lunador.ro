@@ -21,8 +21,8 @@ const splineSansMono = Spline_Sans_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — Opening Soon`,
-    template: `%s`,
+    default: `${siteConfig.name} — Observatory of the inner & outer`,
+    template: `%s · ${siteConfig.name}`,
   },
   description: siteConfig.description,
 };

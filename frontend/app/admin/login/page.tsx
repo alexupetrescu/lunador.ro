@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/components/admin/AuthProvider";
+import Logo from "@/components/site/Logo";
 import { ensureCsrf, login } from "@/lib/browser-api";
 
 import styles from "../admin.module.css";
@@ -43,7 +44,9 @@ export default function LoginPage() {
   return (
     <div className={styles.loginWrap}>
       <form className={styles.loginCard} onSubmit={handleSubmit}>
-        <div className={styles.brand}>lunador</div>
+        <div className={styles.brand}>
+          <Logo size="sm" href="/" />
+        </div>
         <h1 className={styles.loginTitle}>Sign in</h1>
         {error ? <p className={styles.error}>{error}</p> : null}
         <label className={styles.label}>

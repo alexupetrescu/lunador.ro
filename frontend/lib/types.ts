@@ -132,6 +132,14 @@ export interface PostAdmin {
   media: MediaMap;
 }
 
+export interface PostRevision {
+  id: number;
+  title: string;
+  body: TiptapDoc;
+  saved_by: number | null;
+  created_at: string;
+}
+
 export interface Paginated<T> {
   count: number;
   next: string | null;

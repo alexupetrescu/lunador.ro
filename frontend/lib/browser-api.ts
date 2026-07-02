@@ -6,6 +6,7 @@ import type {
   MediaAssetAdmin,
   Paginated,
   PostAdmin,
+  PostRevision,
   Tag,
 } from "./types";
 
@@ -130,6 +131,24 @@ export async function unpublishPost(slug: string) {
   });
 }
 
+export async function schedulePost(slug: string, publishedAt: string) {
+  return request<PostAdmin>(`/blog/admin/posts/${slug}/schedule/`, {
+    method: "POST",
+    json: { published_at: publishedAt },
+  });
+}
+
+export async function listRevisions(slug: string) {
+  return request<PostRevision[]>(`/blog/admin/posts/${slug}/revisions/`);
+}
+
+export async function restoreRevision(slug: string, revisionId: number) {
+  return request<PostAdmin>(
+    `/blog/admin/posts/${slug}/revisions/${revisionId}/restore/`,
+    { method: "POST" },
+  );
+}
+
 // Media -------------------------------------------------------------------------
 
 export async function listMedia(params: Record<string, string> = {}) {
@@ -172,4 +191,37 @@ export async function listTags() {
 
 export async function listCategories() {
   return request<Paginated<Category>>(`/blog/categories/`);
+}
+
+export async function createCategory(data: Partial<Category>) {
+  return request<Category>(`/blog/admin/categories/`, {
+    method: "POST",
+    json: data as Json,
+  });
+}
+
+export async function updateCategory(slug: string, data: Partial<Category>) {
+  return request<Category>(`/blog/admin/categories/${slug}/`, {
+    method: "PATCH",
+    json: data as Json,
+  });
+}
+
+export async function deleteCategory(slug: string) {
+  await request(`/blog/admin/categories/${slug}/`, { method: "DELETE" });
+}
+
+export async function createTag(data: Partial<Tag>) {
+  return request<Tag>(`/blog/admin/tags/`, { method: "POST", json: data as Json });
+}
+
+export async function updateTag(slug: string, data: Partial<Tag>) {
+  return request<Tag>(`/blog/admin/tags/${slug}/`, {
+    method: "PATCH",
+    json: data as Json,
+  });
+}
+
+export async function deleteTag(slug: string) {
+  await request(`/blog/admin/tags/${slug}/`, { method: "DELETE" });
 }
