@@ -51,7 +51,7 @@ export default function Logo({
         </div>
         {showTagline ? (
           <div className={`${styles.tagline} ${dark ? styles.taglineDark : ""}`}>
-            Observatory of the inner &amp; outer
+            Observator al lumii interioare &amp; exterioare
           </div>
         ) : null}
       </div>

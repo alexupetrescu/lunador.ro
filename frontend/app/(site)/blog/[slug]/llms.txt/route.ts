@@ -11,15 +11,15 @@ export async function GET(_request: Request, { params }: RouteContext) {
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) {
-    return new Response("Not found", { status: 404 });
+    return new Response("Nu a fost găsit", { status: 404 });
   }
 
   const parts = [
     `# ${post.title}`,
     "",
-    `Source: ${absoluteUrl(`/blog/${post.slug}`)}`,
+    `Sursă: ${absoluteUrl(`/blog/${post.slug}`)}`,
     `Site: ${siteConfig.name}`,
-    post.published_at ? `Published: ${post.published_at}` : "",
+    post.published_at ? `Publicat: ${post.published_at}` : "",
     "",
     post.body_text || "",
     "",

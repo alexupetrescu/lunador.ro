@@ -10,7 +10,7 @@ export default function DispatchSignup() {
   if (subscribed) {
     return (
       <div className={styles.success}>
-        ✓ Welcome aboard. Watch the horizon every other Sunday.
+        ✓ Bine ai venit la bord. Urmărește orizontul din două în două duminici.
       </div>
     );
   }
@@ -26,11 +26,11 @@ export default function DispatchSignup() {
       <input
         className={styles.input}
         type="email"
-        placeholder="you@somewhere.earth"
-        aria-label="Email address"
+        placeholder="tu@undeva.pamant"
+        aria-label="Adresă de e-mail"
       />
       <button className={styles.button} type="submit">
-        Join
+        Alătură-te
       </button>
     </form>
   );

@@ -8,7 +8,7 @@ import { siteConfig } from "@/lib/site";
 import styles from "./blog.module.css";
 
 export const metadata: Metadata = {
-  title: `The Field Notes — ${siteConfig.name}`,
+  title: `Notele de teren — ${siteConfig.name}`,
   description: siteConfig.description,
   alternates: {
     canonical: "/blog",
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 };
 
 const TABS = [
-  { label: "All", slug: "" },
-  { label: "Philosophy", slug: "philosophy" },
-  { label: "Astrophysics", slug: "astrophysics" },
+  { label: "Toate", slug: "" },
+  { label: "Filozofie", slug: "philosophy" },
+  { label: "Astrofizică", slug: "astrophysics" },
 ] as const;
 
 function pageHref(
@@ -70,12 +70,13 @@ export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
   return (
     <main className={styles.page}>
       <div className={styles.eyebrow}>
-        The catalogue · {count} {count === 1 ? "entry" : "entries"} on file
+        Catalogul · {count} {count === 1 ? "însemnare" : "însemnări"} la dosar
       </div>
-      <h1 className={styles.title}>The Field Notes</h1>
+      <h1 className={styles.title}>Notele de teren</h1>
       <p className={styles.lede}>
-        Everything we have logged so far, kept like an old observatory&apos;s plate
-        register — two long-running threads, one looking out, one looking in.
+        Tot ce am consemnat până acum, păstrat ca registrul de plăci al unui
+        observator vechi — două fire lungi, unul privind în afară, unul privind
+        înăuntru.
       </p>
 
       <form className={styles.searchForm} action="/blog" method="get">
@@ -84,22 +85,22 @@ export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
           className={styles.searchInput}
           type="search"
           name="search"
-          placeholder="Search the register…"
+          placeholder="Caută în registru…"
           defaultValue={search ?? ""}
-          aria-label="Search posts"
+          aria-label="Caută articole"
         />
       </form>
 
       {search ? (
         <p className={styles.searchNote}>
           {posts.length
-            ? `Results for “${search}”`
-            : `No results for “${search}”.`}{" "}
-          <Link href={tabHref(category, undefined)}>Clear</Link>
+            ? `Rezultate pentru „${search}”`
+            : `Niciun rezultat pentru „${search}”.`}{" "}
+          <Link href={tabHref(category, undefined)}>Șterge</Link>
         </p>
       ) : null}
 
-      <div className={styles.tabs} role="tablist" aria-label="Filter by category">
+      <div className={styles.tabs} role="tablist" aria-label="Filtrează după categorie">
         {TABS.map((tab) => {
           const active = tab.slug === category;
           return (
@@ -118,13 +119,13 @@ export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
 
       {posts.length === 0 ? (
         search || category ? null : (
-          <p className={styles.empty}>Nothing published yet — check back soon.</p>
+          <p className={styles.empty}>Nimic publicat încă — revino curând.</p>
         )
       ) : (
         posts.map((post) => (
           <Link key={post.id} href={`/blog/${post.slug}`} className={styles.row}>
             <div className={styles.rowCat}>
-              {post.category?.name?.slice(0, 12) ?? "Essay"}
+              {post.category?.name?.slice(0, 12) ?? "Eseu"}
             </div>
             <div>
               <h3 className={styles.rowTitle}>{post.title}</h3>
@@ -132,11 +133,11 @@ export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
             </div>
             <div className={styles.rowMeta}>
               <div className={styles.rowMetaStream}>
-                {post.category?.name ?? "Essay"}
+                {post.category?.name ?? "Eseu"}
               </div>
               <div>{formatPostDateShort(post.published_at)}</div>
               {post.reading_time ? (
-                <div>{post.reading_time} min read</div>
+                <div>{post.reading_time} min de citit</div>
               ) : null}
             </div>
           </Link>
@@ -144,14 +145,14 @@ export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
       )}
 
       {data && (data.previous || data.next) ? (
-        <nav className={styles.pager} aria-label="Pagination">
+        <nav className={styles.pager} aria-label="Paginare">
           {data.previous ? (
-            <Link href={pageHref(page - 1, params)}>← Newer</Link>
+            <Link href={pageHref(page - 1, params)}>← Mai noi</Link>
           ) : (
             <span />
           )}
           {data.next ? (
-            <Link href={pageHref(page + 1, params)}>Older →</Link>
+            <Link href={pageHref(page + 1, params)}>Mai vechi →</Link>
           ) : (
             <span />
           )}
@@ -159,7 +160,7 @@ export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
       ) : (
         posts.length > 0 && (
           <div className={styles.endNote}>
-            — end of register · the plates continue every other Sunday —
+            — sfârșitul registrului · plăcile continuă din două în două duminici —
           </div>
         )
       )}

@@ -2,9 +2,9 @@ export const siteConfig = {
   name: "lunador.ro",
   title: "lunador.ro",
   description:
-    "Slow essays on the meaning of a life and the physics of the sky it happens under.",
+    "Eseuri lente despre sensul unei vieți și fizica cerului sub care se desfășoară.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-  locale: "en_US",
+  locale: "ro_RO",
   author: {
     name: "Lunador",
     url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",

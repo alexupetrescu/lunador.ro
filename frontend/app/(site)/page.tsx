@@ -46,11 +46,11 @@ function PostStream({
       <div className={styles.streamHeader}>
         <h3 className={styles.streamTitle}>{title}</h3>
         <Link href={allHref} className={styles.streamAll}>
-          All →
+          Toate →
         </Link>
       </div>
       {posts.length === 0 ? (
-        <p className={styles.streamItemDek}>Nothing filed here yet.</p>
+        <p className={styles.streamItemDek}>Nimic arhivat aici deocamdată.</p>
       ) : (
         posts.map((post) => (
           <Link
@@ -66,7 +66,7 @@ function PostStream({
               <p className={styles.streamItemDek}>{post.excerpt}</p>
               <div className={styles.streamItemMeta}>
                 {formatPostDateShort(post.published_at)}
-                {post.reading_time ? ` · ${post.reading_time} min read` : ""}
+                {post.reading_time ? ` · ${post.reading_time} min de citit` : ""}
               </div>
             </div>
           </Link>
@@ -89,24 +89,24 @@ export default async function HomePage() {
       <section className={styles.hero}>
         <div>
           <div className={styles.eyebrow}>
-            Est. 2026 · A lighthouse for the late-night mind
+            Fondat 2026 · Un far pentru mintea de noapte târzie
           </div>
           <h1 className={styles.heroTitle}>
-            For anyone still awake,
+            Pentru oricine e încă treaz,
             <br />
-            <em>still wondering.</em>
+            <em>încă întrebându-se.</em>
           </h1>
           <p className={styles.heroLede}>
-            Slow essays on the meaning of a life — and the physics of the sky it
-            happens under. Written for the rare reader who would rather stay a
-            while than scroll.
+            Eseuri lente despre sensul unei vieți — și fizica cerului sub care
+            se desfășoară. Scrise pentru cititorul rar care preferă să zăbovească
+            în loc să deruleze.
           </p>
           <div className={styles.heroActions}>
             <Link href="/blog" className={styles.btnPrimary}>
-              Start reading
+              Începe să citești
             </Link>
             <Link href="/instruments" className={styles.btnSecondary}>
-              Open the instruments →
+              Deschide instrumentele →
             </Link>
           </div>
         </div>
@@ -162,17 +162,17 @@ export default async function HomePage() {
               style={{ animation: "tw 6s infinite" }}
             />
           </svg>
-          <div className={styles.orbitalCaption}>Plate I · the small companion</div>
+          <div className={styles.orbitalCaption}>Placa I · micul însoțitor</div>
         </div>
       </section>
 
       <div className={styles.ticker}>
         <div className={styles.tickerInner}>
-          <span className={styles.tickerAccent}>Now tracking</span>
+          <span className={styles.tickerAccent}>Urmărim acum</span>
           <span>Lat 47.16°N · Lon 27.58°E</span>
-          <span>Moon · waxing gibbous</span>
-          <span>Mercury · evening sky</span>
-          <span>Local time to next dark · 03h 41m</span>
+          <span>Luna · gibboasă crescătoare</span>
+          <span>Mercur · cerul de seară</span>
+          <span>Timp local până la următorul întuneric · 03h 41m</span>
         </div>
       </div>
 
@@ -181,9 +181,9 @@ export default async function HomePage() {
           <Link href={`/blog/${featured.slug}`} className={styles.featuredLink}>
             <div className={styles.featuredPlate}>
               <div className={styles.fieldNote}>
-                FIELD
+                NOTĂ
                 <br />
-                NOTE
+                DE TEREN
               </div>
               {featured.featured_image?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -193,12 +193,12 @@ export default async function HomePage() {
                 />
               ) : null}
               <div className={styles.featuredPlateLabel}>
-                [ celestial plate · long exposure ]
+                [ placă celestă · expunere lungă ]
               </div>
             </div>
             <div className={styles.featuredBody}>
               <div className={styles.featuredMeta}>
-                {featured.category?.name ?? "Essay"} · This week&apos;s dispatch
+                {featured.category?.name ?? "Eseu"} · Depeșa săptămânii
               </div>
               <h2 className={styles.featuredTitle}>{featured.title}</h2>
               <p className={styles.featuredDek}>{featured.excerpt}</p>
@@ -207,7 +207,7 @@ export default async function HomePage() {
                 {featured.reading_time ? (
                   <>
                     <span>·</span>
-                    <span>{featured.reading_time} min read</span>
+                    <span>{featured.reading_time} min de citit</span>
                   </>
                 ) : null}
               </div>
@@ -216,18 +216,18 @@ export default async function HomePage() {
         </section>
       ) : (
         <p className={styles.emptyFeatured}>
-          The lamp is lit — essays will appear here soon.
+          Lampa e aprinsă — eseurile vor apărea aici în curând.
         </p>
       )}
 
       <section className={styles.streams}>
         <PostStream
-          title="From the philosophy desk"
+          title="De la biroul de filozofie"
           posts={philosophy}
           categorySlug="philosophy"
         />
         <PostStream
-          title="From the observatory"
+          title="De la observator"
           posts={astro}
           categorySlug="astrophysics"
         />
@@ -237,43 +237,43 @@ export default async function HomePage() {
         <div className={styles.instrumentsInner}>
           <div className={styles.instrumentsHeader}>
             <div>
-              <div className={styles.instrumentsEyebrow}>The instrument cabinet</div>
+              <div className={styles.instrumentsEyebrow}>Cabinetul de instrumente</div>
               <h2 className={styles.instrumentsTitle}>
-                Small machines for looking up, and looking inward.
+                Mașinării mici pentru a privi în sus și a privi înăuntru.
               </h2>
             </div>
             <Link href="/instruments" className={styles.instrumentsAll}>
-              Open all →
+              Deschide-le pe toate →
             </Link>
           </div>
           <div className={styles.instrumentsGrid}>
             <Link href="/instruments" className={styles.instrumentCard}>
-              <div className={styles.instrumentNum}>Instrument 01</div>
+              <div className={styles.instrumentNum}>Instrumentul 01</div>
               <div>
-                <h4 className={styles.instrumentName}>Scale of the Universe</h4>
+                <h4 className={styles.instrumentName}>Scara Universului</h4>
                 <p className={styles.instrumentDesc}>
-                  Slide from a proton to the edge of everything, one power of ten
-                  at a time.
+                  Glisează de la un proton până la marginea a tot ce există,
+                  câte o putere a lui zece pe rând.
                 </p>
               </div>
             </Link>
             <Link href="/instruments" className={styles.instrumentCard}>
-              <div className={styles.instrumentNum}>Instrument 02</div>
+              <div className={styles.instrumentNum}>Instrumentul 02</div>
               <div>
-                <h4 className={styles.instrumentName}>Life in Weeks</h4>
+                <h4 className={styles.instrumentName}>Viața în săptămâni</h4>
                 <p className={styles.instrumentDesc}>
-                  Your whole life, drawn as a grid of small squares. A gentle
-                  memento mori.
+                  Întreaga ta viață, desenată ca o grilă de pătrățele. Un
+                  memento mori blând.
                 </p>
               </div>
             </Link>
             <Link href="/instruments" className={styles.instrumentCard}>
-              <div className={styles.instrumentNum}>Instrument 03</div>
+              <div className={styles.instrumentNum}>Instrumentul 03</div>
               <div>
-                <h4 className={styles.instrumentName}>The Quote Drawer</h4>
+                <h4 className={styles.instrumentName}>Sertarul cu citate</h4>
                 <p className={styles.instrumentDesc}>
-                  Pull the drawer. File another. A small ritual of borrowed
-                  steadiness.
+                  Trage sertarul. Arhivează încă unul. Un mic ritual de
+                  statornicie împrumutată.
                 </p>
               </div>
             </Link>
@@ -282,21 +282,22 @@ export default async function HomePage() {
       </section>
 
       <section className={styles.quote}>
-        <div className={styles.quoteEyebrow}>— from the keeper of the light —</div>
+        <div className={styles.quoteEyebrow}>— de la paznicul farului —</div>
         <p className={styles.quoteText}>
-          This is not a place to be convinced of anything. It is a place to find
-          that a thought you suspected you were carrying alone has, in fact, kept
-          other people company for centuries — under the very same stars.
+          Acesta nu este un loc în care să fii convins de ceva. Este un loc în
+          care descoperi că un gând pe care credeai că îl porți singur a ținut,
+          de fapt, companie altor oameni timp de secole — sub exact aceleași
+          stele.
         </p>
       </section>
 
       <section id="dispatch" className={styles.dispatch}>
         <div className={styles.dispatchInner}>
-          <h3 className={styles.dispatchTitle}>The fortnightly dispatch</h3>
+          <h3 className={styles.dispatchTitle}>Depeșa bilunară</h3>
           <p className={styles.dispatchLede}>
-            One essay and one instrument, every other Sunday. No noise, no
-            tracking, no urgency. Unsubscribe whenever the night gets quiet
-            enough.
+            Un eseu și un instrument, din două în două duminici. Fără zgomot,
+            fără urmărire, fără grabă. Dezabonează-te oricând noaptea devine
+            destul de liniștită.
           </p>
           <DispatchSignup />
         </div>

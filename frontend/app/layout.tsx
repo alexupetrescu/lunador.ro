@@ -7,21 +7,21 @@ import { siteConfig } from "@/lib/site";
 
 const newsreader = Newsreader({
   variable: "--font-newsreader",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   weight: ["400", "500"],
   style: ["normal", "italic"],
 });
 
 const splineSansMono = Spline_Sans_Mono({
   variable: "--font-spline-mono",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — Observatory of the inner & outer`,
+    default: `${siteConfig.name} — Observator al lumii interioare și exterioare`,
     template: `%s · ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -48,7 +48,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="ro"
       className={`${newsreader.variable} ${splineSansMono.variable} h-full`}
     >
       <body className="min-h-full">

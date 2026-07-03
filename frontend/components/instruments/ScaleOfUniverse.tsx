@@ -16,14 +16,14 @@ export default function ScaleOfUniverse() {
   return (
     <section className={styles.instrument}>
       <div className={styles.instrumentHeader}>
-        <div className={styles.instrumentLabel}>01 · Scale of the Universe</div>
-        <div className={styles.instrumentHint}>drag the dial</div>
+        <div className={styles.instrumentLabel}>01 · Scara Universului</div>
+        <div className={styles.instrumentHint}>rotește cadranul</div>
       </div>
       <div className={styles.scaleBody}>
         <div className={styles.scalePlate}>
-          <div className={styles.plateTag}>[ plate ]</div>
+          <div className={styles.plateTag}>[ placă ]</div>
           <div className={styles.scaleExp}>{step.exp}</div>
-          <div className={styles.scaleUnit}>metres, give or take</div>
+          <div className={styles.scaleUnit}>metri, cu aproximație</div>
         </div>
         <div>
           <div className={styles.scaleSize}>{step.size}</div>
@@ -34,7 +34,7 @@ export default function ScaleOfUniverse() {
               type="button"
               className={styles.dialBtn}
               onClick={() => setIndex((i) => Math.max(0, i - 1))}
-              aria-label="Scale down"
+              aria-label="Micșorează scara"
             >
               −
             </button>
@@ -46,21 +46,21 @@ export default function ScaleOfUniverse() {
               value={index}
               onChange={(e) => setIndex(Number(e.target.value))}
               className={styles.dialRange}
-              aria-label="Scale of the universe"
+              aria-label="Scara universului"
             />
             <button
               type="button"
               className={styles.dialBtn}
               onClick={() => setIndex((i) => Math.min(max, i + 1))}
-              aria-label="Scale up"
+              aria-label="Mărește scara"
             >
               +
             </button>
           </div>
           <div className={styles.dialLabels}>
             <span>proton</span>
-            <span>a human being</span>
-            <span>the universe</span>
+            <span>o ființă umană</span>
+            <span>universul</span>
           </div>
         </div>
       </div>

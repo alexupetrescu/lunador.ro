@@ -19,13 +19,13 @@ export default function QuoteDrawer() {
   return (
     <section className={`${styles.instrument} ${styles.instrumentDark}`}>
       <div className={styles.instrumentHeaderDark}>
-        <div className={styles.instrumentLabelDark}>03 · The Quote Drawer</div>
-        <div className={styles.instrumentHintDark}>borrowed steadiness</div>
+        <div className={styles.instrumentLabelDark}>03 · Sertarul cu citate</div>
+        <div className={styles.instrumentHintDark}>statornicie împrumutată</div>
       </div>
       <div className={styles.drawerBody}>
         <p className={styles.drawerIntro}>
-          An old card-catalogue drawer of things worth keeping nearby. Pull it open,
-          take what you need, file another for the next person.
+          Un sertar vechi de fișier, cu lucruri care merită ținute la îndemână.
+          Trage-l, ia ce îți trebuie, arhivează altul pentru următorul om.
         </p>
 
         <button
@@ -35,11 +35,11 @@ export default function QuoteDrawer() {
           aria-expanded={open}
         >
           <span className={styles.drawerHandleLabel}>
-            Drawer № IV · steadiness
+            Sertarul № IV · statornicie
           </span>
           <span className={styles.drawerHandleRight}>
             <span className={styles.drawerKnob} />
-            <span className={styles.drawerPull}>pull</span>
+            <span className={styles.drawerPull}>trage</span>
           </span>
         </button>
 
@@ -53,7 +53,7 @@ export default function QuoteDrawer() {
                 <div className={styles.quoteEra}>{quote.era}</div>
               </div>
               <button type="button" className={styles.quoteNext} onClick={nextQuote}>
-                File another →
+                Arhivează altul →
               </button>
             </div>
           </div>

@@ -85,11 +85,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
+      { "@type": "ListItem", position: 1, name: "Acasă", item: siteConfig.url },
       {
         "@type": "ListItem",
         position: 2,
-        name: "The Field Notes",
+        name: "Notele de teren",
         item: absoluteUrl("/blog"),
       },
       ...(post.category
@@ -121,8 +121,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const heroCaption =
     post.featured_image?.caption ||
     (post.featured_image?.alt_text
-      ? `lead plate · ${post.featured_image.alt_text}`
-      : "lead plate");
+      ? `placa principală · ${post.featured_image.alt_text}`
+      : "placa principală");
 
   return (
     <>
@@ -130,7 +130,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       <div className={styles.back}>
         <Link href="/blog" className={styles.backLink}>
-          ← Back to the catalogue
+          ← Înapoi la catalog
         </Link>
       </div>
 
@@ -142,7 +142,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <span className={styles.eyebrowDot}>·</span>
             </>
           ) : null}
-          <span>The reading room</span>
+          <span>Sala de lectură</span>
         </div>
 
         <h1 className={styles.title}>{post.title}</h1>
@@ -151,7 +151,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         <div className={styles.byline}>
           <div className={styles.avatar} aria-hidden />
-          <span className={styles.author}>By {post.author.name}</span>
+          <span className={styles.author}>De {post.author.name}</span>
           <span aria-hidden>·</span>
           <time dateTime={post.published_at ?? undefined}>
             {formatPostDate(post.published_at)}
@@ -159,7 +159,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {post.reading_time ? (
             <>
               <span aria-hidden>·</span>
-              <span>{post.reading_time} min read</span>
+              <span>{post.reading_time} min de citit</span>
             </>
           ) : null}
         </div>
@@ -194,7 +194,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       {related.length > 0 ? (
         <section className={styles.related}>
-          <div className={styles.relatedEyebrow}>Keep reading by lamplight</div>
+          <div className={styles.relatedEyebrow}>Continuă să citești la lumina lămpii</div>
           <div className={styles.relatedGrid}>
             {related.map((item) => (
               <Link
@@ -203,7 +203,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 className={styles.relatedCard}
               >
                 <div className={styles.relatedMeta}>
-                  {item.category?.name ?? "Essay"}
+                  {item.category?.name ?? "Eseu"}
                 </div>
                 <h3 className={styles.relatedTitle}>{item.title}</h3>
                 <p className={styles.relatedDek}>{item.excerpt}</p>

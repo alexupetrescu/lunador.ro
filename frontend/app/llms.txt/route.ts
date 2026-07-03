@@ -14,7 +14,7 @@ export async function GET() {
     "",
     `> ${siteConfig.description}`,
     "",
-    "## Writing",
+    "## Scrieri",
     "",
   ];
 

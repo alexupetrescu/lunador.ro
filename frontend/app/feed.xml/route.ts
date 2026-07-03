@@ -39,7 +39,7 @@ export async function GET() {
     <title>${escapeXml(siteConfig.name)}</title>
     <link>${absoluteUrl("/blog")}</link>
     <description>${escapeXml(siteConfig.description)}</description>
-    <language>en</language>
+    <language>ro</language>
     <lastBuildDate>${new Date(updated).toUTCString()}</lastBuildDate>
     <atom:link href="${absoluteUrl("/feed.xml")}" rel="self" type="application/rss+xml" />
 ${items}

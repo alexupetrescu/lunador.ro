@@ -25,22 +25,22 @@ export default function LifeInWeeks() {
   return (
     <section className={styles.instrument}>
       <div className={styles.instrumentHeader}>
-        <div className={styles.instrumentLabel}>02 · Life in Weeks</div>
-        <div className={styles.instrumentHint}>a gentle memento mori</div>
+        <div className={styles.instrumentLabel}>02 · Viața în săptămâni</div>
+        <div className={styles.instrumentHint}>un memento mori blând</div>
       </div>
       <div className={styles.weeksBody}>
         <div>
           <p className={styles.weeksIntro}>
-            Each square is one week. A row is a year. The filled squares are the
-            weeks you have already been a guest here.
+            Fiecare pătrățel e o săptămână. Un rând e un an. Pătrățelele pline
+            sunt săptămânile în care ai fost deja oaspete aici.
           </p>
-          <div className={styles.ageLabel}>Your age</div>
+          <div className={styles.ageLabel}>Vârsta ta</div>
           <div className={styles.ageControl}>
             <button
               type="button"
               className={styles.dialBtn}
               onClick={() => setAge((a) => Math.max(0, a - 1))}
-              aria-label="Decrease age"
+              aria-label="Scade vârsta"
             >
               −
             </button>
@@ -54,13 +54,13 @@ export default function LifeInWeeks() {
                 if (!Number.isNaN(n)) setAge(Math.min(LIFESPAN, Math.max(0, n)));
               }}
               className={styles.ageInput}
-              aria-label="Your age in years"
+              aria-label="Vârsta ta în ani"
             />
             <button
               type="button"
               className={styles.dialBtn}
               onClick={() => setAge((a) => Math.min(LIFESPAN, a + 1))}
-              aria-label="Increase age"
+              aria-label="Crește vârsta"
             >
               +
             </button>
@@ -69,16 +69,16 @@ export default function LifeInWeeks() {
             <div>
               <div className={styles.statValueGold}>{weeksLived.toLocaleString()}</div>
               <div className={styles.statLabel}>
-                weeks lived · {pct}% of a long life
+                săptămâni trăite · {pct}% dintr-o viață lungă
               </div>
             </div>
             <div>
               <div className={styles.statValue}>{weeksLeft.toLocaleString()}</div>
-              <div className={styles.statLabel}>weeks still on the table</div>
+              <div className={styles.statLabel}>săptămâni încă pe masă</div>
             </div>
           </div>
           <p className={styles.weeksAside}>
-            Not to alarm — to focus. There is a great deal of room left on the page.
+            Nu ca să alarmeze — ca să limpezească. A rămas foarte mult loc pe pagină.
           </p>
         </div>
         <div>
@@ -93,13 +93,13 @@ export default function LifeInWeeks() {
           <div className={styles.weeksLegend}>
             <span className={styles.legendItem}>
               <span className={styles.legendLived} />
-              lived
+              trăite
             </span>
             <span className={styles.legendItem}>
               <span className={styles.legendRemaining} />
-              still to come
+              încă de venit
             </span>
-            <span className={styles.legendMeta}>52 weeks × 90 years</span>
+            <span className={styles.legendMeta}>52 de săptămâni × 90 de ani</span>
           </div>
         </div>
       </div>

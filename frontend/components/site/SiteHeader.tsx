@@ -15,16 +15,16 @@ export default function SiteHeader({
       <Logo showTagline />
       <nav className={styles.nav} aria-label="Main">
         <Link href="/blog" className={styles.navLink}>
-          Essays
+          Eseuri
         </Link>
         <Link href="/instruments" className={styles.navLink}>
-          Instruments
+          Instrumente
         </Link>
         <Link href={readingRoomHref} className={styles.navLink}>
-          Reading Room
+          Sala de lectură
         </Link>
         <a href="#dispatch" className={`${styles.navLink} ${styles.navAccent}`}>
-          Subscribe →
+          Abonează-te →
         </a>
       </nav>
     </header>
