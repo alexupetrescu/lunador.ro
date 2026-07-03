@@ -105,6 +105,14 @@ Frontend server-side calls should use:
 DJANGO_INTERNAL_API_URL=http://127.0.0.1:8010
 ```
 
+This var must be visible to the Next.js build and runtime (put it in
+`frontend/.env.production.local`). The `/media` rewrite and the `/api` proxy
+also use it (via `DJANGO_API_PROXY_TARGET` with fallback to
+`DJANGO_INTERNAL_API_URL`). If it points at the wrong port, `next/image`
+returns 400 "The requested resource isn't a valid image" for every blog image,
+because the image optimizer fetches media originals through the Next rewrite
+straight to Gunicorn — never through nginx.
+
 Browser/client-side calls should use relative URLs:
 
 ```ts

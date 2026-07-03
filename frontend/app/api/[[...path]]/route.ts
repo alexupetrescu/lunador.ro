@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const DJANGO =
-  process.env.DJANGO_API_PROXY_TARGET || "http://127.0.0.1:8000";
+  process.env.DJANGO_API_PROXY_TARGET ||
+  process.env.DJANGO_INTERNAL_API_URL ||
+  "http://127.0.0.1:8000";
 
 const HOP_BY_HOP = new Set([
   "connection",

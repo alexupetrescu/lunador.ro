@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
+// Fall back to DJANGO_INTERNAL_API_URL (the documented production var) so the
+// /media rewrite reaches Gunicorn even when DJANGO_API_PROXY_TARGET is unset.
+// A wrong target here breaks next/image with 400 "not a valid image".
 const djangoTarget =
-  process.env.DJANGO_API_PROXY_TARGET || "http://127.0.0.1:8000";
+  process.env.DJANGO_API_PROXY_TARGET ||
+  process.env.DJANGO_INTERNAL_API_URL ||
+  "http://127.0.0.1:8000";
 
 const nextConfig: NextConfig = {
   // Keep trailing slashes on proxied Django API paths (see app/api/[[...path]]/route.ts).
