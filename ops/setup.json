@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "repository": "alexupetrescu/lunador.ro",
+  "files": {
+    "ops/build_context.py": "3519c5cea2e62b7883fb0929e2a2d1b7d1e1f03734032858dd2e0636a5f6c6c4",
+    "ops/ci.py": "468f1397e2bb7e65cbb0ea2434c22e62c576d8510125d7afaa1a6f8854b6e2a9",
+    "ops/ci_backend.py": "df13df0637548e6db96a0f84893a4ea5074ffe8980d2d7c05159a28f1714e32a",
+    "ops/ci_settings.py": "b4b6153f1cc621a2451dac5f773176455627a265c96227b0e4dd6fb912165559",
+    "ops/deploy.py": "6f5bed6fe01eee273977faad88cc957650301957562c5a55c367b333a361d182",
+    "ops/deploy_vps.py": "a06cae87a0ac0b4b39ede38e250eb672b0166f7d25284e2774694a274fd8105b",
+    "ops/publish.py": "435ddd9e3f2a6c60d420417b2debdcc297a02c5e753c040b504f7bd9bc519ace",
+    "ops/publish_setup.py": "56a67b851662b373a26f3719537dfee0c47f38fc2d271c1a8397ce61063680df",
+    "ops/test_release.py": "c7d3d94eae6c62fa358cea0dcdf551ad34cb708f08551fe76838bf3b45f8230b",
+    "ops/project.json": "4ace1cbaed281796b9dcbd82315248bfeabc1c6574fc0905a5e443a7b8190a82",
+    "ops/requirements.lock": "499c20413c229efecea8f5e69df64b0062972923204a2adb23374f14eee9d8de",
+    "ops/vendor/README.md": "43432acf44b0a33330b9330cb7141d258483200b89097193f05c90f23d86e41d",
+    "ops/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ops/README.md": "7966158d2a9ca0b8f17f1c35a3183ab424ecf7599386d7beb3f5a29bfdc4e29f",
+    "ops/production_settings.py": "c94c1c6b7d869c43e40bed057d3563657ad4bc7dd797b80a1a3f90e1d0295cbf",
+    "ops/production_middleware.py": "cf5a4c919e4027f37be06d9751a7a3b03a21319242ecec2374aa6d529b1c15e8",
+    "ops/production_urls.py": "3ed5be2fde65746fd8153ca1201083ec72f677d0c49ee702fd5151866d686f67",
+    "ops/backend.Dockerfile": "954fe94037456ca87f558cc75005b11fac65ad01c282d8a2eedc26329cdf4661",
+    "ops/frontend.Dockerfile": "ae9cc118361dfc57fa88ff37f16076c00439f23e754c5a5937e2766267b7fda1",
+    "ops/ssh.conf": "b7029e4c4b89325180fb878b4e29d1e73ffe51b2790555c27fac60dfc0f41d60",
+    ".github/workflows/release.yml": "7bb9c906c950be4e4ca2f863954d9378c2bf1da4b0455d8cfef285a769d72884",
+    "frontend/package.json": "3431c30077f026e6e9550fb2a7fe865b0e40ce91fc5f999d7b75a52c7b690f4f",
+    "frontend/package-lock.json": "dd03e42bba9141c3c96c1e2a538e036e103ab8b512029ed7508e285b071adb41",
+    ".gitignore": "f84d8664114fde0c01c4dce6f2492bc91f61d1daf7224b2502c9be129d0d6d9f"
+  }
+}

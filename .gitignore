@@ -39,3 +39,11 @@ backup/
 basic_log_commands.txt  
 
 design/
+# GitHub release build and local deployment cache
+/.release/
+/.deploy/
+!ops/**
+
+# Local dotenv files
+.env*
+!**/.env.example
